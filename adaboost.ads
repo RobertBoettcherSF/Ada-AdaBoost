@@ -1,5 +1,3 @@
-with Ada.Numerics.Elementary_Functions;
-
 package Adaboost is
    -- Strong typing for domain variables
    type Feature_Value is new Float;
