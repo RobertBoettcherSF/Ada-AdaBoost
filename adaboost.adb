@@ -68,8 +68,8 @@ package body Adaboost is
    begin
       Model.Count := 0;
       Model.Feature_Count := 0;
-      Model.Learners := (others => (Feature => 1, Threshold => 0.0, Polarity => 1));
-      Model.Alphas := (others => 0.0);
+      Model.Learners := [others => (Feature => 1, Threshold => 0.0, Polarity => 1)];
+      Model.Alphas := [others => 0.0];
 
       if X'Length (1) = 0 or else X'Length (2) = 0 then
          raise Empty_Dataset_Error;
@@ -83,7 +83,7 @@ package body Adaboost is
 
       declare
          D : Sample_Weight_Array (X'Range (1)) := 
-           (others => 1.0 / Classifier_Weight (X'Length (1)));
+           [others => 1.0 / Classifier_Weight (X'Length (1))];
          Stump : Decision_Stump;
          Err   : Classifier_Weight;
       begin
