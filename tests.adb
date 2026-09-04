@@ -34,14 +34,18 @@ begin
       end;
       Check ("1.1 Empty matrix rows raises Empty_Dataset_Error", Raised_Error);
       Check ("1.2 Model count remains 0", Model.Count = 0);
+      pragma Warnings (Off, "condition can only be False if invalid values present");
+      pragma Warnings (Off, "condition is always True");
       Check ("1.3 Max iterations intact", Model.Max_Iterations = 10);
+      pragma Warnings (On, "condition is always True");
+      pragma Warnings (On, "condition can only be False if invalid values present");
    end;
 
    Put_Line ("TEST 2 - Exception: Empty Dataset (0 cols)");
    declare
       Raised_Error : Boolean := False;
       Zero_Col_X   : Features_Matrix (1 .. 1, 1 .. 0);
-      One_Row_Y    : Labels_Array (1 .. 1) := [1 => Positive];
+      One_Row_Y    : Labels_Array (1 .. 1) := [1 => Adaboost.Positive];
    begin
       begin
          Train (Model, Zero_Col_X, One_Row_Y);
@@ -58,7 +62,7 @@ begin
    declare
       Raised_Error : Boolean := False;
       Mismatch_X   : Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 2.0]];
-      Mismatch_Y   : Labels_Array (1 .. 1) := [1 => Positive];
+      Mismatch_Y   : Labels_Array (1 .. 1) := [1 => Adaboost.Positive];
    begin
       begin
          Train (Model, Mismatch_X, Mismatch_Y);
@@ -75,12 +79,12 @@ begin
    declare
       Raised_Error : Boolean := False;
       X : Features_Matrix (1 .. 1, 1 .. 2) := [1 => [1 => 1.0, 2 => 1.0]];
-      Y : Labels_Array (1 .. 1) := [1 => Positive];
+      Y : Labels_Array (1 .. 1) := [1 => Adaboost.Positive];
       Vec : Feature_Vector (1 .. 3) := [1 => 1.0, 2 => 1.0, 3 => 1.0];
    begin
       Train (Model, X, Y);
       begin
-         if Predict (Model, Vec) = Positive then
+         if Predict (Model, Vec) = Adaboost.Positive then
             null;
          end if;
       exception
@@ -95,59 +99,59 @@ begin
    Put_Line ("TEST 5 - Perfect Separation (Polarity 1)");
    declare
       X : Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 3.0]];
-      Y : Labels_Array (1 .. 2) := [Negative, Positive];
+      Y : Labels_Array (1 .. 2) := [Adaboost.Negative, Adaboost.Positive];
       V1 : Feature_Vector (1 .. 1) := [1 => 1.0];
       V2 : Feature_Vector (1 .. 1) := [1 => 3.0];
    begin
       Train (Model, X, Y);
       Check ("5.1 Stops early at 1 stump", Model.Count = 1);
-      Check ("5.2 Predicts Negative for 1.0", Predict (Model, V1) = Negative);
-      Check ("5.3 Predicts Positive for 3.0", Predict (Model, V2) = Positive);
+      Check ("5.2 Predicts Negative for 1.0", Predict (Model, V1) = Adaboost.Negative);
+      Check ("5.3 Predicts Positive for 3.0", Predict (Model, V2) = Adaboost.Positive);
    end;
 
    Put_Line ("TEST 6 - Perfect Separation (Polarity -1)");
    declare
       X : Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 3.0]];
-      Y : Labels_Array (1 .. 2) := [Positive, Negative];
+      Y : Labels_Array (1 .. 2) := [Adaboost.Positive, Adaboost.Negative];
       V1 : Feature_Vector (1 .. 1) := [1 => 1.0];
       V2 : Feature_Vector (1 .. 1) := [1 => 3.0];
    begin
       Train (Model, X, Y);
       Check ("6.1 Stops early at 1 stump", Model.Count = 1);
-      Check ("6.2 Predicts Positive for 1.0", Predict (Model, V1) = Positive);
-      Check ("6.3 Predicts Negative for 3.0", Predict (Model, V2) = Negative);
+      Check ("6.2 Predicts Positive for 1.0", Predict (Model, V1) = Adaboost.Positive);
+      Check ("6.3 Predicts Negative for 3.0", Predict (Model, V2) = Adaboost.Negative);
    end;
 
    Put_Line ("TEST 7 - Inseparable Data Handling");
    declare
       X : Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 2.0], 2 => [1 => 2.0]];
-      Y : Labels_Array (1 .. 2) := [Positive, Negative];
+      Y : Labels_Array (1 .. 2) := [Adaboost.Positive, Adaboost.Negative];
    begin
       Train (Model, X, Y);
       Check ("7.1 Cannot separate, aborts gracefully", Model.Count = 0);
-      Check ("7.2 Predict returns default (Positive) for empty ensemble", Predict (Model, [1 => 2.0]) = Positive);
+      Check ("7.2 Predict returns default (Positive) for empty ensemble", Predict (Model, [1 => 2.0]) = Adaboost.Positive);
       Check ("7.3 Predict_Score is exactly 0.0", Predict_Score (Model, [1 => 2.0]) = 0.0);
    end;
 
    Put_Line ("TEST 8 - All Positive Labels Quick Exit");
    declare
       X : Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 3.0]];
-      Y : Labels_Array (1 .. 2) := [Positive, Positive];
+      Y : Labels_Array (1 .. 2) := [Adaboost.Positive, Adaboost.Positive];
    begin
       Train (Model, X, Y);
       Check ("8.1 Early exit on perfect score", Model.Count = 1);
-      Check ("8.2 Predicts Positive unconditionally", Predict (Model, [1 => 2.0]) = Positive);
+      Check ("8.2 Predicts Positive unconditionally", Predict (Model, [1 => 2.0]) = Adaboost.Positive);
       Check ("8.3 Score is strictly positive", Predict_Score (Model, [1 => 2.0]) > 0.0);
    end;
 
    Put_Line ("TEST 9 - All Negative Labels Quick Exit");
    declare
       X : Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 3.0]];
-      Y : Labels_Array (1 .. 2) := [Negative, Negative];
+      Y : Labels_Array (1 .. 2) := [Adaboost.Negative, Adaboost.Negative];
    begin
       Train (Model, X, Y);
       Check ("9.1 Early exit on perfect score", Model.Count = 1);
-      Check ("9.2 Predicts Negative unconditionally", Predict (Model, [1 => 2.0]) = Negative);
+      Check ("9.2 Predicts Negative unconditionally", Predict (Model, [1 => 2.0]) = Adaboost.Negative);
       Check ("9.3 Score is strictly negative", Predict_Score (Model, [1 => 2.0]) < 0.0);
    end;
 
@@ -156,13 +160,13 @@ begin
       -- 1D Space: [1.5, 2.5] is Positive, outside is Negative. Stumps must combine.
       X : Features_Matrix (1 .. 3, 1 .. 1) := 
         [1 => [1 => 1.0], 2 => [1 => 2.0], 3 => [1 => 3.0]];
-      Y : Labels_Array (1 .. 3) := [Negative, Positive, Negative];
+      Y : Labels_Array (1 .. 3) := [Adaboost.Negative, Adaboost.Positive, Adaboost.Negative];
    begin
       Train (Model, X, Y);
       Check ("10.1 Required >1 stump to map region", Model.Count > 1);
-      Check ("10.2 Left bound correctly predicted", Predict (Model, [1 => 1.0]) = Negative);
-      Check ("10.3 Center correctly predicted", Predict (Model, [1 => 2.0]) = Positive);
-      Check ("10.4 Right bound correctly predicted", Predict (Model, [1 => 3.0]) = Negative);
+      Check ("10.2 Left bound correctly predicted", Predict (Model, [1 => 1.0]) = Adaboost.Negative);
+      Check ("10.3 Center correctly predicted", Predict (Model, [1 => 2.0]) = Adaboost.Positive);
+      Check ("10.4 Right bound correctly predicted", Predict (Model, [1 => 3.0]) = Adaboost.Negative);
    end;
 
    Put_Line ("TEST 11 - 2D Feature Selection");
@@ -171,24 +175,24 @@ begin
         [1 => [1 => 1.0, 2 => 1.0], 2 => [1 => 1.0, 2 => 3.0],
          3 => [1 => 3.0, 2 => 1.0], 4 => [1 => 3.0, 2 => 3.0]];
       -- Class depends exclusively on feature 2
-      Y : Labels_Array (1 .. 4) := [Negative, Positive, Negative, Positive];
+      Y : Labels_Array (1 .. 4) := [Adaboost.Negative, Adaboost.Positive, Adaboost.Negative, Adaboost.Positive];
    begin
       Train (Model, X, Y);
       Check ("11.1 Stopped early (separable on F2)", Model.Count = 1);
-      Check ("11.2 Evaluates correctly disregarding F1", Predict (Model, [1 => 9.0, 2 => 3.0]) = Positive);
-      Check ("11.3 Evaluates correctly regarding F2", Predict (Model, [1 => 9.0, 2 => 1.0]) = Negative);
+      Check ("11.2 Evaluates correctly disregarding F1", Predict (Model, [1 => 9.0, 2 => 3.0]) = Adaboost.Positive);
+      Check ("11.3 Evaluates correctly regarding F2", Predict (Model, [1 => 9.0, 2 => 1.0]) = Adaboost.Negative);
    end;
 
    Put_Line ("TEST 12 - Extreme Values Robustness");
    declare
       X : Features_Matrix (1 .. 2, 1 .. 1) := 
         [1 => [1 => -1.0e15], 2 => [1 => 1.0e15]];
-      Y : Labels_Array (1 .. 2) := [Negative, Positive];
+      Y : Labels_Array (1 .. 2) := [Adaboost.Negative, Adaboost.Positive];
    begin
       Train (Model, X, Y);
       Check ("12.1 Converged successfully without overflow", Model.Count = 1);
-      Check ("12.2 Handled extreme negative well", Predict (Model, [1 => -1.0e15]) = Negative);
-      Check ("12.3 Handled extreme positive well", Predict (Model, [1 => 1.0e15]) = Positive);
+      Check ("12.2 Handled extreme negative well", Predict (Model, [1 => -1.0e15]) = Adaboost.Negative);
+      Check ("12.3 Handled extreme positive well", Predict (Model, [1 => 1.0e15]) = Adaboost.Positive);
    end;
 
    Put_Line ("TEST 13 - Empty Model Usage");
@@ -197,7 +201,7 @@ begin
       Vec : Feature_Vector (1 .. 2) := [1.0, 2.0];
    begin
       Check ("13.1 Defaults to score 0.0", Predict_Score (Empty_Model, Vec) = 0.0);
-      Check ("13.2 Defaults to Positive class", Predict (Empty_Model, Vec) = Positive);
+      Check ("13.2 Defaults to Positive class", Predict (Empty_Model, Vec) = Adaboost.Positive);
       Check ("13.3 Does not crash on dimension mismatch if Count=0", True);
    end;
 
