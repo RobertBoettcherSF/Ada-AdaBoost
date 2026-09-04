@@ -45,7 +45,7 @@ begin
    declare
       Raised_Error : Boolean := False;
       Zero_Col_X   : Features_Matrix (1 .. 1, 1 .. 0);
-      One_Row_Y    : Labels_Array (1 .. 1) := [1 => Adaboost.Positive];
+      One_Row_Y    : constant Labels_Array (1 .. 1) := [1 => Adaboost.Positive];
    begin
       begin
          Train (Model, Zero_Col_X, One_Row_Y);
@@ -61,8 +61,8 @@ begin
    Put_Line ("TEST 3 - Exception: Dimension Mismatch (Rows)");
    declare
       Raised_Error : Boolean := False;
-      Mismatch_X   : Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 2.0]];
-      Mismatch_Y   : Labels_Array (1 .. 1) := [1 => Adaboost.Positive];
+      Mismatch_X   : constant Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 2.0]];
+      Mismatch_Y   : constant Labels_Array (1 .. 1) := [1 => Adaboost.Positive];
    begin
       begin
          Train (Model, Mismatch_X, Mismatch_Y);
@@ -78,9 +78,9 @@ begin
    Put_Line ("TEST 4 - Exception: Dimension Mismatch (Predict)");
    declare
       Raised_Error : Boolean := False;
-      X : Features_Matrix (1 .. 1, 1 .. 2) := [1 => [1 => 1.0, 2 => 1.0]];
-      Y : Labels_Array (1 .. 1) := [1 => Adaboost.Positive];
-      Vec : Feature_Vector (1 .. 3) := [1 => 1.0, 2 => 1.0, 3 => 1.0];
+      X : constant Features_Matrix (1 .. 1, 1 .. 2) := [1 => [1 => 1.0, 2 => 1.0]];
+      Y : constant Labels_Array (1 .. 1) := [1 => Adaboost.Positive];
+      Vec : constant Feature_Vector (1 .. 3) := [1 => 1.0, 2 => 1.0, 3 => 1.0];
    begin
       Train (Model, X, Y);
       begin
@@ -98,10 +98,10 @@ begin
 
    Put_Line ("TEST 5 - Perfect Separation (Polarity 1)");
    declare
-      X : Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 3.0]];
-      Y : Labels_Array (1 .. 2) := [Adaboost.Negative, Adaboost.Positive];
-      V1 : Feature_Vector (1 .. 1) := [1 => 1.0];
-      V2 : Feature_Vector (1 .. 1) := [1 => 3.0];
+      X : constant Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 3.0]];
+      Y : constant Labels_Array (1 .. 2) := [Adaboost.Negative, Adaboost.Positive];
+      V1 : constant Feature_Vector (1 .. 1) := [1 => 1.0];
+      V2 : constant Feature_Vector (1 .. 1) := [1 => 3.0];
    begin
       Train (Model, X, Y);
       Check ("5.1 Stops early at 1 stump", Model.Count = 1);
@@ -111,10 +111,10 @@ begin
 
    Put_Line ("TEST 6 - Perfect Separation (Polarity -1)");
    declare
-      X : Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 3.0]];
-      Y : Labels_Array (1 .. 2) := [Adaboost.Positive, Adaboost.Negative];
-      V1 : Feature_Vector (1 .. 1) := [1 => 1.0];
-      V2 : Feature_Vector (1 .. 1) := [1 => 3.0];
+      X : constant Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 3.0]];
+      Y : constant Labels_Array (1 .. 2) := [Adaboost.Positive, Adaboost.Negative];
+      V1 : constant Feature_Vector (1 .. 1) := [1 => 1.0];
+      V2 : constant Feature_Vector (1 .. 1) := [1 => 3.0];
    begin
       Train (Model, X, Y);
       Check ("6.1 Stops early at 1 stump", Model.Count = 1);
@@ -124,8 +124,8 @@ begin
 
    Put_Line ("TEST 7 - Inseparable Data Handling");
    declare
-      X : Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 2.0], 2 => [1 => 2.0]];
-      Y : Labels_Array (1 .. 2) := [Adaboost.Positive, Adaboost.Negative];
+      X : constant Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 2.0], 2 => [1 => 2.0]];
+      Y : constant Labels_Array (1 .. 2) := [Adaboost.Positive, Adaboost.Negative];
    begin
       Train (Model, X, Y);
       Check ("7.1 Cannot separate, aborts gracefully", Model.Count = 0);
@@ -135,8 +135,8 @@ begin
 
    Put_Line ("TEST 8 - All Positive Labels Quick Exit");
    declare
-      X : Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 3.0]];
-      Y : Labels_Array (1 .. 2) := [Adaboost.Positive, Adaboost.Positive];
+      X : constant Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 3.0]];
+      Y : constant Labels_Array (1 .. 2) := [Adaboost.Positive, Adaboost.Positive];
    begin
       Train (Model, X, Y);
       Check ("8.1 Early exit on perfect score", Model.Count = 1);
@@ -146,8 +146,8 @@ begin
 
    Put_Line ("TEST 9 - All Negative Labels Quick Exit");
    declare
-      X : Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 3.0]];
-      Y : Labels_Array (1 .. 2) := [Adaboost.Negative, Adaboost.Negative];
+      X : constant Features_Matrix (1 .. 2, 1 .. 1) := [1 => [1 => 1.0], 2 => [1 => 3.0]];
+      Y : constant Labels_Array (1 .. 2) := [Adaboost.Negative, Adaboost.Negative];
    begin
       Train (Model, X, Y);
       Check ("9.1 Early exit on perfect score", Model.Count = 1);
@@ -158,9 +158,9 @@ begin
    Put_Line ("TEST 10 - Multi-Step AdaBoost Region Learning");
    declare
       -- 1D Space: [1.5, 2.5] is Positive, outside is Negative. Stumps must combine.
-      X : Features_Matrix (1 .. 3, 1 .. 1) := 
+      X : constant Features_Matrix (1 .. 3, 1 .. 1) := 
         [1 => [1 => 1.0], 2 => [1 => 2.0], 3 => [1 => 3.0]];
-      Y : Labels_Array (1 .. 3) := [Adaboost.Negative, Adaboost.Positive, Adaboost.Negative];
+      Y : constant Labels_Array (1 .. 3) := [Adaboost.Negative, Adaboost.Positive, Adaboost.Negative];
    begin
       Train (Model, X, Y);
       Check ("10.1 Required >1 stump to map region", Model.Count > 1);
@@ -171,11 +171,11 @@ begin
 
    Put_Line ("TEST 11 - 2D Feature Selection");
    declare
-      X : Features_Matrix (1 .. 4, 1 .. 2) := 
+      X : constant Features_Matrix (1 .. 4, 1 .. 2) := 
         [1 => [1 => 1.0, 2 => 1.0], 2 => [1 => 1.0, 2 => 3.0],
          3 => [1 => 3.0, 2 => 1.0], 4 => [1 => 3.0, 2 => 3.0]];
       -- Class depends exclusively on feature 2
-      Y : Labels_Array (1 .. 4) := [Adaboost.Negative, Adaboost.Positive, Adaboost.Negative, Adaboost.Positive];
+      Y : constant Labels_Array (1 .. 4) := [Adaboost.Negative, Adaboost.Positive, Adaboost.Negative, Adaboost.Positive];
    begin
       Train (Model, X, Y);
       Check ("11.1 Stopped early (separable on F2)", Model.Count = 1);
@@ -185,9 +185,9 @@ begin
 
    Put_Line ("TEST 12 - Extreme Values Robustness");
    declare
-      X : Features_Matrix (1 .. 2, 1 .. 1) := 
+      X : constant Features_Matrix (1 .. 2, 1 .. 1) := 
         [1 => [1 => -1.0e15], 2 => [1 => 1.0e15]];
-      Y : Labels_Array (1 .. 2) := [Adaboost.Negative, Adaboost.Positive];
+      Y : constant Labels_Array (1 .. 2) := [Adaboost.Negative, Adaboost.Positive];
    begin
       Train (Model, X, Y);
       Check ("12.1 Converged successfully without overflow", Model.Count = 1);
@@ -198,7 +198,7 @@ begin
    Put_Line ("TEST 13 - Empty Model Usage");
    declare
       Empty_Model : AdaBoost_Model (Max_Iterations => 5);
-      Vec : Feature_Vector (1 .. 2) := [1.0, 2.0];
+      Vec : constant Feature_Vector (1 .. 2) := [1.0, 2.0];
    begin
       Check ("13.1 Defaults to score 0.0", Predict_Score (Empty_Model, Vec) = 0.0);
       Check ("13.2 Defaults to Positive class", Predict (Empty_Model, Vec) = Adaboost.Positive);
