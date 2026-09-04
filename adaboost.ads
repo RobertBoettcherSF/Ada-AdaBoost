@@ -5,8 +5,8 @@ package Adaboost is
    type Feature_Value is new Float;
    type Class_Label is (Negative, Positive);
 
-   type Feature_Index is new Positive;
-   type Sample_Index is new Positive;
+   type Feature_Index is new Standard.Positive;
+   type Sample_Index is new Standard.Positive;
 
    type Feature_Vector is array (Feature_Index range <>) of Feature_Value;
    type Features_Matrix is array (Sample_Index range <>, Feature_Index range <>) of Feature_Value;
@@ -24,11 +24,11 @@ package Adaboost is
    end record;
 
    type Classifier_Weight is new Float;
-   type Weak_Learner_Array is array (Positive range <>) of Decision_Stump;
-   type Weights_Array is array (Positive range <>) of Classifier_Weight;
+   type Weak_Learner_Array is array (Standard.Positive range <>) of Decision_Stump;
+   type Weights_Array is array (Standard.Positive range <>) of Classifier_Weight;
 
    -- The Strong Classifier
-   type AdaBoost_Model (Max_Iterations : Positive) is record
+   type AdaBoost_Model (Max_Iterations : Standard.Positive) is record
       Count         : Natural := 0;
       Feature_Count : Natural := 0;
       Learners      : Weak_Learner_Array (1 .. Max_Iterations);
