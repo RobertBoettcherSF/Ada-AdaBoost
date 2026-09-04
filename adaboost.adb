@@ -1,3 +1,5 @@
+with Ada.Numerics.Elementary_Functions;
+
 package body Adaboost is
    use Ada.Numerics.Elementary_Functions;
 
